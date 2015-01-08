@@ -1,4 +1,4 @@
-console.log("Starting out")
+var _ = require("underscore");
 
 var myMessage = {
   message: "Hi!",
