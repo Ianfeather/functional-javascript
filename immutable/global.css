@@ -1,0 +1,19 @@
+body {
+  font-family: Arial;
+  color: grey;
+}
+
+div  {
+  font-family: courier
+}
+
+h1,h2,h3,h4,h5,h6 {
+  margin: 0;
+}
+
+#test {
+  background-color: red;
+  height: 50px;
+  width: 0px;
+  transition: all 0.5s cubic-bezier(0.45, 0.51, 0.48, 1.41);
+}

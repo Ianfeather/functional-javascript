@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Func JS</title>
+  <script type="text/javascript" src="script.js"></script>
+
+  <link rel="stylesheet" href="global.css" />
+</head>
+<body>
+  <h1>SVG</h1>
+
+  <svg>
+    <use xlink:href="all.svg#foo">
+  </svg>
+
+
+  <svg>
+    <use xlink:href="all.svg#bar">
+  </svg>
+
+  <svg>
+    <use xlink:href="all.svg#baz">
+  </svg>
+
+
+  <div id="svgs" class="is-hidden"></div>
+
+  <script>
+
+  function loadSVG () {
+    return fetch("/icons.html")
+      .then(function(response) {
+        return response.text();
+      })
+  }
+
+
+  // loadSVG()
+  //   .then(function(data) {
+  //     svgs.innerHTML = data;
+  //   });
+
+
+  </script>
+
+</body>
+</html>

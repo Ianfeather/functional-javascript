@@ -1,0 +1,45 @@
+<template id="my-greeting">
+  <style>
+  :host {
+    font-family: Courier;
+    display: block;
+  }
+  .name {
+    color: blue;
+  }
+  </style>
+
+  <div class="name">
+    Hello
+    <content></content>.
+    What's up?
+  </div>
+
+</template>
+
+
+<script>
+  // Grab our template full of slider markup and styles
+  (function() {
+
+    var currentDoc = document.currentScript.ownerDocument,
+        template = currentDoc.querySelector('#my-greeting');
+
+    // Create a prototype for a new element that extends HTMLElement
+    var MyGreeting = Object.create(HTMLDivElement.prototype);
+
+    // Setup our Shadow DOM and clone the template
+    MyGreeting.createdCallback = function() {
+      var root = this.createShadowRoot();
+      root.appendChild(document.importNode(template.content, true));
+    };
+
+    // Register our new element
+    document.registerElement('my-greeting', {
+      prototype: MyGreeting
+    });
+
+  }());
+
+</script>
+

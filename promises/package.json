@@ -1,0 +1,15 @@
+{
+  "name": "func-js",
+  "version": "0.0.1",
+  "dependencies": {
+    "underscore": "~1.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ianfeather/func-js.git"
+  },
+  "devDependencies": {
+    "normalizecss": "~3.0.0",
+    "es6-promise": "~2.0.1"
+  }
+}
