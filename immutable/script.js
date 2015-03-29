@@ -1,79 +1,112 @@
-var i = 0,
 
-app = (function() {
+
+var app = (function() {
 
   "use strict";
 
-  var updateState = function updateState(state) {
-    test.style.width = state.get("width") + "px";
-    test.style.height = state.get("height") + "px";
+  var currentPosition = 0,
+      shapes;
+
+  /*
+  // Update the shape in the DOM
+  */
+  var updateShape = function updateShape(state) {
+    test.style.width = `${state.get("width")}px`;
+    test.style.height = `${state.get("height")}px`;
   };
 
-  var maps = (function setupMaps() {
 
-    var map1 = Immutable.Map({ width: 1, height: 1 }),
-        arr  = [];
+  /*
+  // Returns an array of immutables
+  */
+  var setupShapes = function setupShapes() {
 
-    for (var i = 0; i < 10; i++) {
-      arr.push(map1.merge({ height: Math.random() * 200, width: Math.random() * 1000 }));
-    }
+    var map1 = Immutable.Map({ width: 1, height: 1 });
 
-    return arr;
+    return Array.apply(null, Array(10)).map(function() {
 
-  }());
-
-  var interval = setInterval(function() {
-
-    i++;
-
-    if (i == maps.length -1) {
-      clearInterval(interval);
-    }
-    updateState(maps[i]);
-
-  }, 400)
-
-
-  return {
-
-    undo: function undo() {
-      i > 0 && updateState(maps[--i]);
-    },
-
-    redo: function redo() {
-      i < maps.length - 1 && updateState(maps[++i]);
-    },
-
-    getState: function getState() {
-      return maps.slice(0, i + 1);
-    },
-
-    setState: function setState(newState) {
-      var states = JSON.parse(newState);
-
-      maps = states.map(function(state){
-        return Immutable.Map(state)
+      return map1.merge({
+        height: Math.random() * 200,
+        width:  Math.random() * 1000
       });
 
-      i = maps.length - 1;
-      updateState(maps[i]);
-    }
+    });
+
+  };
+
+  /*
+  // Animate in our new shapes so we have some visual progress
+  */
+  var paintInitialShapes = function paintInitialShapes() {
+    var interval = setInterval(function() {
+      if (currentPosition < shapes.length) {
+        updateShape(shapes[currentPosition]);
+        return currentPosition++;
+      }
+
+      currentPosition = shapes.length - 1;
+      clearInterval(interval);
+    }, 500);
+  }
+
+  /*
+  //  Add a few event handers
+  */
+  var setupHandlers = function setupHandlers() {
+
+    document.querySelector("#undo").addEventListener("click", app.undo, false);
+    document.querySelector("#redo").addEventListener("click", app.redo, false);
+
+    document.querySelector("#export").addEventListener("click", function() {
+      console.log(JSON.stringify(app.getState()));
+    }, false);
+
+    document.querySelector("#import").addEventListener("click", function() {
+      app.setState(JSON.parse(document.querySelector("#import-input").value));
+    }, false);
 
   }
 
 
+
+
+  /*
+  // Public API
+  */
+  return {
+
+    // Set up ten initial shapes
+    init: function init() {
+      shapes = setupShapes();
+
+      setupHandlers();
+      paintInitialShapes();
+    },
+
+    undo: function undo() {
+      currentPosition > 0 && updateShape(shapes[--currentPosition]);
+    },
+
+    redo: function redo() {
+      currentPosition < shapes.length - 1 && updateShape(shapes[++currentPosition]);
+    },
+
+    getState: function getState() {
+      return shapes.slice(0, currentPosition + 1);
+    },
+
+    setState: function setState(newState) {
+      shapes = [ Immutable.Map(newState.shift()) ];
+
+      newState.forEach(function(currentState){
+        shapes.push(shapes[0].merge(currentState))
+      });
+
+      currentPosition = shapes.length - 1;
+
+      updateShape(shapes[currentPosition]);
+    }
+
+  }
+
 }());
-
-
-
-document.querySelector("#undo").addEventListener("click", app.undo, false);
-document.querySelector("#redo").addEventListener("click", app.redo, false);
-
-document.querySelector("#export").addEventListener("click", function() {
-  console.log(JSON.stringify(app.getState()));
-}, false);
-
-document.querySelector("#import").addEventListener("click", function() {
-  var value = document.querySelector("#import-input").value;
-  app.setState(value);
-}, false);
