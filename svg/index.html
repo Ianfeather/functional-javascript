@@ -22,26 +22,28 @@
     <use xlink:href="all.svg#baz">
   </svg>
 
+  <svg>
+    <defs>
+      <filter id="goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+        <feBlend in="SourceGraphic" in2="goo" />
+      </filter>
 
-  <div id="svgs" class="is-hidden"></div>
+      <filter id="fancy-goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+      </filter>
 
-  <script>
-
-  function loadSVG () {
-    return fetch("/icons.html")
-      .then(function(response) {
-        return response.text();
-      })
-  }
+    </defs>
+  </svg>
 
 
-  // loadSVG()
-  //   .then(function(data) {
-  //     svgs.innerHTML = data;
-  //   });
 
-
-  </script>
+  <div class="area">
+    <div class="ball"></div>
+  </div>
 
 </body>
 </html>
